@@ -1,7 +1,18 @@
+enum RequestType{
+    BORROW, RETURN
+}
+
+@BookInfo(createdBy = "LibraryAdmin", lastModified = "2025-01-28")
 public class Book {
+    @NotNull(message = "Title cannot be null")
     private final String title;
+
+    @NotNull(message = "Author cannot be null")
     private final String author;
+
+    @NotNull(message = "ISBN cannot be null")
     private final String isbn;
+
     private boolean isAvailable;
 
     public Book(String title, String author, String isbn) {
@@ -46,12 +57,14 @@ public class Book {
 
 // BookRequest class
 class BookRequest {
-    public final String isbn;
-    public final Person user;
+    private final String isbn;
+    private final Person user;
+    private RequestType requestType;
 
-    public BookRequest(String isbn, Person user) {
+    public BookRequest(@NotNull String isbn, Person user, RequestType request) {
         this.isbn = isbn;
         this.user = user;
+        this.requestType = request;
     }
 
     public String getIsbn() {
@@ -60,6 +73,10 @@ class BookRequest {
 
     public Person getUser() {
         return user;
+    }
+
+    public RequestType getRequestType(){
+        return requestType;
     }
 
 }
