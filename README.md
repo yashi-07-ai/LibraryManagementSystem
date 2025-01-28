@@ -1,0 +1,27 @@
+Consists of 4 files :
+- Library
+  - addBook
+  - searchBook
+  - getBook (by ISBN)
+  - processBookRequests (process a queue of borrow requests made by different users)
+  - returnBook (makes the book available to other users again)
+  - viewIssuedBooks
+  - addBookRequest (add a book request to the queue)
+  - sortBooksByTitle
+  - sortBooksByAuthor
+  - filterAvailableBooks (display books which are currently available)
+-  Book
+   - getter and setter methods to assign values
+   - borrowBooks and returnBooks to update the availability status
+   - BookRequest
+     - to manage the queue
+- Person ( base class )
+  - Admin ( extends Person class )
+    - addBook (only admin can add book to the library)
+    - performAction (displays action that admin can perform)
+  - RegularUser ( member of the library & extends person class)
+    - borrowBooks
+    - returnBooks
+    - performAction
+ - Main ( executes the code )     
+     
