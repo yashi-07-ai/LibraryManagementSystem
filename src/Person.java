@@ -1,5 +1,3 @@
-import org.jetbrains.annotations.NotNull;
-
 import java.util.*;
 
 // Base class for Person
@@ -88,9 +86,9 @@ class UserThread extends Thread{
     private final Library library;
     private final RegularUser user;
     private final String bookIsbn;
-    private RequestType requestType;
+    private final RequestType requestType;
 
-    public UserThread(Library library, RegularUser user, String isbn, RequestType request) {
+    public UserThread(@NotNull Library library, RegularUser user, String isbn, RequestType request) {
         this.library = library;
         this.user = user;
         this.bookIsbn = isbn;

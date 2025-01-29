@@ -1,9 +1,11 @@
+import java.io.*;
+
 enum RequestType{
     BORROW, RETURN
 }
 
 @BookInfo(createdBy = "LibraryAdmin", lastModified = "2025-01-28")
-public class Book {
+public class Book implements Serializable{
     @NotNull(message = "Title cannot be null")
     private final String title;
 
@@ -14,12 +16,25 @@ public class Book {
     private final String isbn;
 
     private boolean isAvailable;
+    private final File bookFile;
+    transient public int id = 1;
 
-    public Book(String title, String author, String isbn) {
+    public Book(@NotNull(message = "Fields cannot be null") String title, String author, String isbn) {
         this.title = title;
         this.author = author;
         this.isbn = isbn;
         this.isAvailable = true;
+
+        // Create a file for storing the book's content
+        this.bookFile = new File(title.replaceAll(" ", "_") + ".txt");
+        try {
+            if (bookFile.createNewFile()) {
+                System.out.println("File created for book: " + title);
+            }
+        } catch (IOException e) {
+            System.err.println("Error creating file for book: " + title);
+            e.printStackTrace();
+        }
     }
 
     // Getters
@@ -46,6 +61,33 @@ public class Book {
 
     public void returnBook() {
         isAvailable = true;
+    }
+
+    // Write content to the book file
+    public void writeContent(String newContent) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(bookFile, true))) {
+            writer.write(newContent);
+            writer.newLine();
+            System.out.println("Content added to the book: " + title);
+        } catch (IOException e) {
+            System.err.println("Error writing to the book file: " + title);
+            e.printStackTrace();
+        }
+    }
+
+    // Read content from the book file
+    public void readContent() {
+        System.out.println("Reading content of the book: " + title);
+        try (BufferedReader reader = new BufferedReader(new FileReader(bookFile))) {
+            String line;
+            int pageNumber = 1;
+            while ((line = reader.readLine()) != null) {
+                System.out.println("Page " + pageNumber++ + ": " + line);
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading the book file: " + title);
+            e.printStackTrace();
+        }
     }
 
     @Override

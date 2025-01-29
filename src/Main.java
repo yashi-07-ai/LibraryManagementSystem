@@ -1,6 +1,4 @@
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.io.*;
 
 // Main class
 public class Main {
@@ -83,6 +81,10 @@ public class Main {
             e.printStackTrace();
         }
 
+        //reading a file
+        library.readBookContent("12345", user1);
+        library.readBookContent("12345", user3);
+
         System.out.println("All user requests have been processed.");
 
         // Regular user requesting a book
@@ -90,6 +92,54 @@ public class Main {
 //        user2.borrowBook(library, "12345"); // this will not be assigned to user2 as already issued by user1
 //        user2.borrowBook(library, "54321");
         System.out.println("/------------------------------------------------/");
+
+        // serialization and deserialization
+        Book object = new Book("Silent Patient", "Alicia", "11111");
+
+        try{
+            FileOutputStream file = new FileOutputStream("serialize.txt");
+            ObjectOutputStream out = new ObjectOutputStream(file);
+
+            // Method for serialization of object
+            out.writeObject(object);
+
+            out.close();
+            file.close();
+
+            System.out.println("Object has been serialized");
+            System.out.println("Object before deserialization : " );
+            SerialExample.printData(object);
+        }catch (IOException e){
+            System.out.println("IOExcpetion is caught!");
+        }
+
+        object = null;
+
+        try{
+            FileInputStream file = new FileInputStream("serialize.txt");
+            ObjectInputStream in = new ObjectInputStream(file);
+
+            object = (Book)in.readObject();
+
+            in.close();
+            file.close();
+
+            System.out.println("Object has been deserialized");
+            SerialExample.printData(object);
+
+        }catch(IOException ex){
+            System.out.println("IOExcpetion is caught!");
+        }catch (ClassNotFoundException ex){
+            System.out.println("ClassNotFoundException is caught!");
+        }
+        // end of serialization and deserialization
+
+        // writing into a file (admin only)
+        // library.addOrEditBookContent("12345", "Title : The Great gatsby", admin1);
+        // library.addOrEditBookContent("12345", "Chapter 1: Introduction", admin1);
+
+        System.out.println("/------------------------------------------------/");
+
 
         // searching book
         library.searchBook("great");
@@ -116,6 +166,5 @@ public class Main {
         library.sortBooksByAuthor();
         System.out.println("/------------------------------------------------/");
 
-        return;
     }
 }

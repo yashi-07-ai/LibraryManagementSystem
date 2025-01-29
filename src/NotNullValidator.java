@@ -1,3 +1,4 @@
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
 public class NotNullValidator {
@@ -17,5 +18,3 @@ public class NotNullValidator {
         }
     }
 }
-
-

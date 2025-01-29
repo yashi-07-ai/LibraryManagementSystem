@@ -1,9 +1,9 @@
 import java.util.*;
 
 public class Library {
-    private List<Book> books;
-    private Queue<BookRequest> bookRequestQueue;
-    private Map<Book, RegularUser> issuedBooks;  // to keep a track of issued books
+    private final List<Book> books;
+    private final Queue<BookRequest> bookRequestQueue;
+    private final Map<Book, RegularUser> issuedBooks;  // to keep a track of issued books
 
     public Library() {
         this.books = new ArrayList<>();
@@ -15,6 +15,41 @@ public class Library {
     public synchronized void addBook(Book book) {
         books.add(book);
         System.out.println("Book added: " + book.getTitle());
+    }
+
+    // Add/Edit Book Content (Admins Only)
+    public void addOrEditBookContent(String isbn, String content, Admin admin) {
+        Book book = getBookByISBN(isbn);
+        if (book != null) {
+            System.out.println(admin.getName() + " is editing the content of the book: " + book.getTitle());
+            book.writeContent(content);
+        } else {
+            System.out.println("No book found with ISBN: " + isbn);
+        }
+    }
+
+    // Read Book Content (Accessible by Any User)
+    public void readBookContent(String isbn, Person user) {
+        try{
+            Book book = getBookByISBN(isbn);
+            if (book != null) {
+                if(issuedBooks.containsKey(book) && issuedBooks.get(book).equals(user)){
+                    System.out.println(user.getName() + " is reading the content of the book: " + book.getTitle());
+                    book.readContent();
+                }
+                else {
+                    throw new LibraryExceptions(user.getName() + " cannot read this book.");
+                }
+
+
+
+            } else {
+                System.out.println("No book found with ISBN: " + isbn);
+            }
+        }catch(LibraryExceptions e){
+            System.err.println("Operation Error: " + e.getMessage());
+        }
+
     }
 
     public synchronized void addBookRequest(BookRequest request) {
@@ -135,7 +170,6 @@ public class Library {
 
         for (Book book : books) {
             if (book.getTitle().equalsIgnoreCase(bookTitle)) {
-                found = true;
                 if (book.isAvailable()) {
                     throw new LibraryExceptions(user.getName() + " is trying to return a book that was not borrowed.");
                 }
